@@ -4,12 +4,10 @@ const pool = require("./db/connection");
 const { rawListeners } = require("./db/connection");
 
 async function init() {
-  //   const employeeList = await testQuery();
-
   console.log(`
-  =================================
-  Welcome to your Employee Tracker!
-  =================================`);
+=================================
+Welcome to your Employee Tracker!
+=================================`);
 
   await inquirer
     .prompt({
@@ -28,45 +26,45 @@ async function init() {
       ],
     })
     .then(({ optionSelect }) => {
+      console.log(optionSelect + " selected.");
+
       switch (optionSelect) {
         case "View all departments":
-          console.log(optionSelect + " selected.");
           viewAllDepartments();
           break;
         case "View all roles":
-          console.log(optionSelect + " selected.");
           viewAllRoles();
           break;
         case "View all employees":
-          console.log(optionSelect + " selected.");
           viewAllEmployees();
           break;
         case "Add a department":
-          console.log(optionSelect + " selected.");
+          addDepartment();
           break;
         case "Add a role":
-          console.log(optionSelect + " selected.");
+          addRole();
           break;
         case "Add an employee":
-          console.log(optionSelect + " selected.");
+          addEmployee();
           break;
         case "Update employee role":
-          console.log(optionSelect + " selected.");
+          updateEmployee();
           break;
         case "Exit Application":
-          console.log(optionSelect + " selected.");
+          exitApplication();
           break;
       }
     });
 }
 
 async function viewAllDepartments() {
-  let results = [];
-
   await pool.query(`SELECT * FROM departments`).then(([rows]) => {
     let values = ctable.getTable(["id", "name"], rows);
 
     console.log(values);
+
+    // restart application
+    init();
   });
 }
 
@@ -98,6 +96,9 @@ async function viewAllRoles() {
       );
 
       console.log(values);
+
+      // restart application
+      init();
     });
 }
 
@@ -138,6 +139,43 @@ async function viewAllEmployees() {
 
       console.log(values);
     });
+}
+
+async function addDepartment() {
+  await inquirer
+    .prompt({
+      type: "text",
+      name: "departmentName",
+      message:
+        "Please enter the name for the new department (leave blank to exit):\n",
+    })
+    .then((input) => {
+      // if no input or only spaces, return to main menu
+      if (!input.departmentName.trim()) {
+        console.log("No input detected. returning to main menu...\n");
+      } else {
+        pool.query(
+          `INSERT INTO departments (name)
+          VALUES
+              ('${input.departmentName.trim()}');`
+        );
+      }
+
+      // restart application
+      init();
+    });
+}
+
+async function addRole() {}
+
+async function addEmployee() {}
+
+async function updateEmployee() {}
+
+// function to exit application
+function exitApplication() {
+  console.log("Bye!");
+  process.exit();
 }
 
 // FUNCTION CALL
