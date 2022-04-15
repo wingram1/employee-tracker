@@ -54,6 +54,16 @@ const insertEmployee = async function (firstName, lastName, roleId, managerId) {
   );
 };
 
+const updateEmployeeRole = async function (employeeId, roleId) {
+  return await pool.query(
+    `UPDATE employees
+            SET
+                role_id = ${roleId}
+            WHERE
+                id = ${employeeId};`
+  );
+};
+
 module.exports = {
   getDepartments,
   getRoles,
@@ -61,4 +71,5 @@ module.exports = {
   insertDepartment,
   insertRole,
   insertEmployee,
+  updateEmployeeRole,
 };

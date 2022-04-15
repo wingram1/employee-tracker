@@ -7,6 +7,7 @@ const {
   insertDepartment,
   insertRole,
   insertEmployee,
+  updateEmployeeRole,
 } = require("./utils/queries");
 
 async function init() {
@@ -54,7 +55,7 @@ Welcome to your Employee Tracker!
           addEmployee();
           break;
         case "Update employee role":
-          updateEmployee();
+          changeEmployeeRole();
           break;
         case "Exit Application":
           exitApplication();
@@ -153,6 +154,8 @@ async function addDepartment() {
       // push to mysql
       insertDepartment(input.departmentName.trim());
 
+      console.log("Department added.");
+
       // restart application
       init();
     });
@@ -209,6 +212,7 @@ async function addRole() {
       console.log(newRole);
       // push to mysql
       insertRole(newRole.title.trim(), newRole.salary, newRole.department_id);
+      console.log("Role added.");
     });
 }
 
@@ -281,15 +285,6 @@ async function addEmployee() {
         managerId = parseInt(data.manager);
       }
 
-      let newEmployee = {
-        firstName: data.firstName.trim(),
-        lastName: data.lastName.trim(),
-        roleId: parseInt(data.role),
-        managerId: managerId,
-      };
-
-      console.log(newEmployee);
-
       // push to mysql
       insertEmployee(
         data.firstName.trim(),
@@ -297,13 +292,48 @@ async function addEmployee() {
         parseInt(data.role),
         managerId
       );
+      console.log("Employee added.");
     });
 
   // restart application
   init();
 }
 
-async function updateEmployee() {}
+async function changeEmployeeRole() {
+  await inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "employee",
+        message: "Please select an employee:\n",
+        choices: async function () {
+          return await getEmployees().then(([rows]) => {
+            return rows.map((row) => {
+              return `${row.id}: ${row.first_name} ${row.last_name}`;
+            });
+          });
+        },
+      },
+      {
+        type: "list",
+        name: "newRole",
+        message: "Please select the new employee's new role:\n",
+        choices: async function () {
+          return await getRoles().then(([rows]) => {
+            return rows.map((row) => {
+              return `${row.id}: ${row.title}`;
+            });
+          });
+        },
+      },
+    ])
+    .then((data) => {
+      updateEmployeeRole(parseInt(data.employee), parseInt(data.newRole));
+      console.log("Change complete!");
+    });
+  // restart application
+  init();
+}
 
 // function to exit application
 function exitApplication() {
