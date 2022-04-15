@@ -66,7 +66,6 @@ Welcome to your Employee Tracker!
 
 async function viewAllDepartments() {
   await getDepartments().then(([rows]) => {
-    console.log(rows);
     let values = ctable.getTable(["id", "name"], rows);
 
     console.log(values);
@@ -209,11 +208,13 @@ async function addRole() {
         salary: parseInt(data.salary),
         department_id: parseInt(data.department),
       };
-      console.log(newRole);
       // push to mysql
       insertRole(newRole.title.trim(), newRole.salary, newRole.department_id);
       console.log("Role added.");
     });
+
+  // restart application
+  init();
 }
 
 async function addEmployee() {
@@ -280,7 +281,7 @@ async function addEmployee() {
     .then((data) => {
       // if 'N/A' was chosedn for managerId, replace with NULL
       if (data.manager === "N/A") {
-        managerId = NULL;
+        managerId = null;
       } else {
         managerId = parseInt(data.manager);
       }
