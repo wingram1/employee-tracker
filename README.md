@@ -23,9 +23,15 @@ Welcome to my Employee Tracker! Using this application, you can easily organize 
 3. Install required dependencies with the command `npm install inquirer mysql2`
 4. Open the MySQL Shell with `mysql -u <your-mysql-username> -p`
 5. To get the database up and running, type in the shell `source db/db.sql; source db/schema.sql;`
-6. Finally, enter the command `node index` and have fun!
+6. Make an .env file, and type in the following:
 
-- [Instructional Video]()
+> `DB_USER='your-username-here'`
+
+> `DB_PW='your-password-here'`
+
+7. Finally, enter the command `node index` and have fun!
+
+- [Instructional Video](https://www.youtube.com/watch?v=-IW0o2VY8Rc) (Audio warning: my good microphone was out at the time of this recording)
 
 ## Examples of Use
 
